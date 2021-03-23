@@ -4,3 +4,5 @@ database.db
 *.pyc
 AdministrativeManagement/menus/__pycache__/rooms_menus.cpython-39.pyc
 *.xml
+AdministrativeManagement/menus/__pycache__/rooms_menus.cpython-39.pyc
+.idea/workspace.xml
