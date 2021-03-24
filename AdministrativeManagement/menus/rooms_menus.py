@@ -9,14 +9,30 @@ import sqlite3
 def new_room_menu(origin_app):
 
     def new_room_validation():
-        print(room_places_rec.get())
-        print(room_vip_places_rec.get())
-        if room_name_rec.get() == '' or room_places_rec.get() == '' or room_vip_places_rec.get() == '':
+        if '' in (room_name_rec.get(), room_places_rec.get(), room_vip_places_rec.get()):
             new_room_error_text.set(lang.new_room_error_empty_entry)
-            print(0)
             return
 
-        tkinter.messagebox.askquestion(title=lang.new_room_confirmation_frame_title, message=lang.new_room_confirmation_frame_message)
+        new_room_confirmation_askquestion_rec = tkinter.messagebox.askquestion(title=lang.new_room_confirmation_frame_title, message=lang.new_room_confirmation_frame_message.format(room_name_rec.get()), icon='warning')
+        if new_room_confirmation_askquestion_rec == 'yes':
+            try:
+                db_con = sqlite3.connect('database.db')
+                db_cur = db_con.cursor()
+
+                db_new_values = (db_cur.lastrowid, room_name_rec.get(), room_places_rec.get(), room_vip_places_rec.get(),)
+                db_cur.execute("INSERT INTO cms_rooms VALUES(?, ?, ?, ?)", db_new_values)
+                db_con.commit()
+
+            except Exception as e:
+                db_con.rollback()
+                tkinter.messagebox.showwarning(title=lang.db_error_frame_title, message=lang.db_error_frame_message.format(e))
+                return
+
+            finally:
+                db_con.close()
+                new_room_app.destroy()
+                return
+
 
     new_room_app = tkinter.Toplevel(origin_app)
     new_room_app.grab_set()
@@ -38,12 +54,12 @@ def new_room_menu(origin_app):
 
     #  Places Entry Title
     tkinter.Label(new_room_app, font=("Helvetica", 10, "bold"), text=f"\n {lang.new_room_places}").pack()
-    room_places_rec = tkinter.IntVar()
+    room_places_rec = tkinter.StringVar()
     tkinter.Spinbox(new_room_app, from_=1, to=1000, textvariable=room_places_rec).pack(pady=10)
 
     #  Vip Places Entry Title
     tkinter.Label(new_room_app, font=("Helvetica", 10, "bold"), text=f"\n {lang.new_room_places}").pack()
-    room_vip_places_rec = tkinter.IntVar()
+    room_vip_places_rec = tkinter.StringVar()
     tkinter.Spinbox(new_room_app, from_=1, to=1000, textvariable=room_vip_places_rec).pack(pady=10)
 
     # Frame Buttons -Validation Button - Annulation Button
