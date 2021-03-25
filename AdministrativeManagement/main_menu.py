@@ -24,6 +24,8 @@ def apps_opening(origin_app, destination_app):
     def open_app():
         if destination_app == 'new_room_menu':
             origin_app.wait_window(AdministrativeManagement.menus.rooms_menus.new_room_menu(origin_app))
+        if destination_app == 'remove_room_menu':
+            origin_app.wait_window(AdministrativeManagement.menus.rooms_menus.remove_room_menu(origin_app))
 
     return open_app
 
@@ -31,7 +33,7 @@ def apps_opening(origin_app, destination_app):
 def am_app_f():
     am_app = tkinter.Tk()
     am_app.title("Cinema Management System - Administrative Management")
-    am_app.geometry('800x600')
+    am_app.geometry(f"800x600+{(int(am_app.winfo_screenwidth()) // 2) - (800 //2)}+{(int(am_app.winfo_screenheight()) // 2) - (600 //2)}")
     am_app.minsize(600, 500)
 
     am_mm = tkinter.Menu(am_app)
@@ -40,7 +42,7 @@ def am_app_f():
     room_menu = tkinter.Menu(am_mm, tearoff=0)
     am_mm.add_cascade(label=lang.room_menu, menu=room_menu)
     room_menu.add_command(label=lang.new_room, command=apps_opening(am_app, 'new_room_menu'))
-    room_menu.add_command(label=lang.remove_room)
+    room_menu.add_command(label=lang.remove_room, command=apps_opening(am_app, 'remove_room_menu'))
     room_menu.add_separator()
 
     for room in get_all_rooms():
